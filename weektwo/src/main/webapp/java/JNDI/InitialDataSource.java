@@ -41,7 +41,6 @@ public class InitialDataSource extends HttpServlet {
             ResultSet rs = stmt.getResultSet();
             while(rs.next()){
                 String name = rs.getString("name");
-                System.out.println("查询出来的用户名为"+name);
             }
         } catch (NamingException | SQLException e) {
             e.printStackTrace();
