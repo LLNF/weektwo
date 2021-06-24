@@ -14,15 +14,21 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Objects;
 
 @WebServlet(urlPatterns = "/getConnection")
 public class InitialDataSource extends HttpServlet {
 
-    public Connection getConnection() throws NamingException, SQLException {
-        Context context = new InitialContext();
-        DataSource dataSource = (DataSource)context.lookup("java:comp/env/jdbc/test");
-        Connection conn = dataSource.getConnection();
-        return conn;
+    private Connection connection;
+    @Override
+    public void init(){
+        try {
+            connection = getConnection();
+        } catch (NamingException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -33,7 +39,9 @@ public class InitialDataSource extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
-            Connection connection = getConnection();
+            if(connection==null){
+                throw new NullPointerException();
+            }
             String sql = "select name from  user";
             //  5）获取执行sql的对象Statement类的stmt
             Statement stmt = connection.createStatement();
@@ -41,10 +49,20 @@ public class InitialDataSource extends HttpServlet {
             ResultSet rs = stmt.getResultSet();
             while(rs.next()){
                 String name = rs.getString("name");
+                System.out.println("查询到名称为"+name);
             }
-        } catch (NamingException | SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         req.getRequestDispatcher("/index.jsp").forward(req,resp);
     }
+
+
+    public Connection getConnection() throws NamingException, SQLException {
+        Context context = new InitialContext();
+        DataSource dataSource = (DataSource)context.lookup("java:comp/env/jdbc/test");
+        Connection conn = dataSource.getConnection();
+        return conn;
+    }
+
 }
