@@ -1,4 +1,4 @@
-package JNDI;
+package jndi;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -14,7 +14,6 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Objects;
 
 @WebServlet(urlPatterns = "/getConnection")
 public class InitialDataSource extends HttpServlet {
@@ -49,7 +48,7 @@ public class InitialDataSource extends HttpServlet {
             ResultSet rs = stmt.getResultSet();
             while(rs.next()){
                 String name = rs.getString("name");
-                System.out.println("查询到名称为"+name);
+                System.out.println("查询出来的用户名为"+name);
             }
         } catch (Exception e) {
             e.printStackTrace();
